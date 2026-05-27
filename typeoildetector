@@ -1,0 +1,93 @@
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.graphics import Color, Rectangle
+
+class OilApp(App):
+
+    def build(self):
+
+        layout = BoxLayout(
+            orientation='vertical',
+            padding=30,
+            spacing=20
+        )
+
+        # خلفية ملونة
+        with layout.canvas.before:
+            Color(0.1, 0.1, 0.1, 1)
+            self.rect = Rectangle(size=(1000,1000))
+
+        title = Label(
+            text='Oil Type Detector',
+            font_size=40,
+            bold=True,
+            size_hint=(1,0.2)
+        )
+
+        self.mass = TextInput(
+            hint_text='Enter Mass (kg)',
+            multiline=False,
+            font_size=28,
+            size_hint=(1,0.15)
+        )
+
+        self.volume = TextInput(
+            hint_text='Enter Volume (m3)',
+            multiline=False,
+            font_size=28,
+            size_hint=(1,0.15)
+        )
+
+        button = Button(
+            text='Calculate',
+            font_size=30,
+            background_color=(0,0.6,1,1),
+            size_hint=(1,0.2)
+        )
+
+        self.result = Label(
+            text='Result will appear here',
+            font_size=30,
+            size_hint=(1,0.3)
+        )
+
+        button.bind(on_press=self.calculate)
+
+        layout.add_widget(title)
+        layout.add_widget(self.mass)
+        layout.add_widget(self.volume)
+        layout.add_widget(button)
+        layout.add_widget(self.result)
+
+        return layout
+
+    def calculate(self, instance):
+
+        try:
+            m = float(self.mass.text)
+            v = float(self.volume.text)
+
+            density = m / v
+
+            if density < 850:
+                oil = "Light Oil"
+
+            elif density < 920:
+                oil = "Medium Oil"
+
+            else:
+                oil = "Heavy Oil"
+
+            self.result.text = (
+                "Density = " + str(round(density,2))
+                + " kg/m3\n" +
+                oil
+            )
+
+        except:
+            self.result.text = "Enter valid numbers"
+
+OilApp().run()
